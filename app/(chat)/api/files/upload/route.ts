@@ -12,8 +12,8 @@ const FileSchema = z.object({
       message: 'File size should be less than 100MB',
     })
     // Update the file type based on the kind of files you want to accept
-    .refine((file) => ['image/jpeg', 'image/png', 'video/mp4'].includes(file.type), {
-      message: 'File type should be JPEG, PNG or MP4',
+    .refine((file) => ['image/jpeg', 'image/png', 'video/mp4', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/pdf'].includes(file.type), {
+      message: 'File type should be DOCX, PDF, JPEG, PNG or MP4',
     }),
 });
 
