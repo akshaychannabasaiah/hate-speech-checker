@@ -154,7 +154,8 @@ export async function POST(request: Request) {
           sendReasoning: true,
         });
       },
-      onError: () => {
+      onError: (error) => {
+        console.error('Error in chat:', error);
         return 'Oops, an error occured!';
       },
     });

@@ -5,6 +5,7 @@ import {
 } from 'ai';
 import { groq } from '@ai-sdk/groq';
 import { xai } from '@ai-sdk/xai';
+import { google } from '@ai-sdk/google';
 import { isTestEnvironment } from '../constants';
 import {
   artifactModel,
@@ -24,9 +25,9 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': xai('grok-2-1212'),
+        'chat-model': google('gemini-2.0-flash'),
         'chat-model-reasoning': wrapLanguageModel({
-          model: groq('deepseek-r1-distill-llama-70b'),
+          model: google('gemini-2.0-flash'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
         'title-model': xai('grok-2-1212'),
