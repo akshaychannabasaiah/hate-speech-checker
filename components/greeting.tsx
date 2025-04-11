@@ -22,7 +22,10 @@ export const Greeting = () => {
         transition={{ delay: 0.6 }}
         className="text-2xl text-zinc-500"
       >
-        How can I help you today?
+        This tool helps recognize hate speech and other forms of harmful
+        content. It can be used to identify and flag potentially harmful
+        messages, allowing for better moderation and user safety. Please upload
+        your document, audio or video here.
       </motion.div>
     </div>
   );
