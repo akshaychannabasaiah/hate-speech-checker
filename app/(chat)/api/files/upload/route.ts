@@ -24,7 +24,7 @@ const FileSchema = z.object({
           'application/pdf',
         ].includes(file.type),
       {
-        message: 'File type should be DOCX, PDF, JPEG, PNG or MP4',
+        message: 'File type should be DOCX, PDF, JPEG, PNG, MP3 or MP4',
       },
     ),
 });
