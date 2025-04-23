@@ -2,14 +2,16 @@ import { Toaster } from 'sonner';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from '@vercel/analytics/react';
 
 import './globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://chat.vercel.ai'),
-  title: 'Next.js Chatbot Template',
-  description: 'Next.js chatbot template using the AI SDK.',
+  title:
+    'Media Integrity Reporting & Review - Reflecting Truth in Every Frame.',
+  description:
+    'Media Integrity Reporting & Review - Reflecting Truth in Every Frame.',
 };
 
 export const viewport = {
