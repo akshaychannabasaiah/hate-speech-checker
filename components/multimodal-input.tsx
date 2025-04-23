@@ -20,7 +20,6 @@ import { ArrowUpIcon, PaperclipIcon, StopIcon } from './icons';
 import { PreviewAttachment } from './preview-attachment';
 import { Button } from './ui/button';
 import { Textarea } from './ui/textarea';
-// import { SuggestedActions } from './suggested-actions';
 import equal from 'fast-deep-equal';
 import type { UseChatHelpers } from '@ai-sdk/react';
 
@@ -53,12 +52,33 @@ function PureMultimodalInput({
 }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { width } = useWindowSize();
+  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
+  const [autoSubmitPending, setAutoSubmitPending] = useState(false);
+
+  const [localStorageInput, setLocalStorageInput] = useLocalStorage(
+    'input',
+    '',
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
+      const domValue = textareaRef.current.value;
+      const finalValue = domValue || localStorageInput || '';
+      setInput(finalValue);
       adjustHeight();
     }
   }, []);
+
+  useEffect(() => {
+    setLocalStorageInput(input);
+  }, [input, setLocalStorageInput]);
+
+  useEffect(() => {
+    if (autoSubmitPending && attachments.length > 0) {
+      submitForm();
+      setAutoSubmitPending(false);
+    }
+  }, [attachments, autoSubmitPending]);
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -74,46 +94,19 @@ function PureMultimodalInput({
     }
   };
 
-  const [localStorageInput, setLocalStorageInput] = useLocalStorage(
-    'input',
-    '',
-  );
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      const domValue = textareaRef.current.value;
-      // Prefer DOM value over localStorage to handle hydration
-      const finalValue = domValue || localStorageInput || '';
-      setInput(finalValue);
-      adjustHeight();
-    }
-    // Only run once after hydration
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    setLocalStorageInput(input);
-  }, [input, setLocalStorageInput]);
-
   const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(event.target.value);
     adjustHeight();
   };
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
 
   const submitForm = useCallback(() => {
     window.history.replaceState({}, '', `/chat/${chatId}`);
-
-    handleSubmit(undefined, {
-      experimental_attachments: attachments,
-    });
-
+    handleSubmit(undefined, { experimental_attachments: attachments });
     setAttachments([]);
     setLocalStorageInput('');
     resetHeight();
-
     if (width && width > 768) {
       textareaRef.current?.focus();
     }
@@ -129,21 +122,17 @@ function PureMultimodalInput({
   const uploadFile = async (file: File) => {
     const formData = new FormData();
     formData.append('file', file);
-
     try {
       const response = await fetch('/api/files/upload', {
         method: 'POST',
         body: formData,
       });
-
       if (response.ok) {
         const data = await response.json();
-        const { url, pathname, contentType } = data;
-
         return {
-          url,
-          name: pathname,
-          contentType: contentType,
+          url: data.url,
+          name: data.pathname,
+          contentType: data.contentType,
         };
       }
       const { error } = await response.json();
@@ -156,45 +145,50 @@ function PureMultimodalInput({
   const handleFileChange = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
       const files = Array.from(event.target.files || []);
-
       setUploadQueue(files.map((file) => file.name));
-
       try {
         const uploadPromises = files.map((file) => uploadFile(file));
         const uploadedAttachments = await Promise.all(uploadPromises);
-        const successfullyUploadedAttachments = uploadedAttachments.filter(
-          (attachment) => attachment !== undefined,
-        );
-
-        setAttachments((currentAttachments) => [
-          ...currentAttachments,
-          ...successfullyUploadedAttachments,
-        ]);
+        const successfullyUploaded = uploadedAttachments.filter(Boolean);
+        setAttachments((prev) => [...prev, ...successfullyUploaded]);
+        if (!input && successfullyUploaded.length > 0) {
+          setInput('MIRROR ANALYSIS REPORT');
+          setAutoSubmitPending(true);
+        } else {
+          submitForm();
+        }
       } catch (error) {
         console.error('Error uploading files!', error);
       } finally {
         setUploadQueue([]);
       }
     },
-    [setAttachments],
+    [input, setAttachments, setInput, submitForm],
   );
 
   return (
     <div className="relative w-full flex flex-col gap-4">
-      {/* {messages.length === 0 &&
-        attachments.length === 0 &&
-        uploadQueue.length === 0 && (
-          <SuggestedActions append={append} chatId={chatId} />
-        )} */}
-
-      <input
-        type="file"
-        className="fixed -top-4 -left-4 size-0.5 opacity-0 pointer-events-none"
-        ref={fileInputRef}
-        multiple
-        onChange={handleFileChange}
-        tabIndex={-1}
-      />
+      <div
+        className="relative w-full rounded-xl border border-dashed p-4 transition-colors cursor-pointer hover:bg-muted/50"
+        onClick={() => fileInputRef.current?.click()}
+      >
+        <div className="flex flex-col items-center justify-center text-center">
+          <PaperclipIcon size={28} className="text-gray-400 mb-2" />
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Drag and drop files here or click to upload
+          </p>
+          <p className="text-xs text-gray-400 mt-1">
+            (Supports multiple files)
+          </p>
+        </div>
+        <input
+          type="file"
+          className="hidden"
+          ref={fileInputRef}
+          multiple
+          onChange={handleFileChange}
+        />
+      </div>
 
       {(attachments.length > 0 || uploadQueue.length > 0) && (
         <div
@@ -204,15 +198,10 @@ function PureMultimodalInput({
           {attachments.map((attachment) => (
             <PreviewAttachment key={attachment.url} attachment={attachment} />
           ))}
-
           {uploadQueue.map((filename) => (
             <PreviewAttachment
               key={filename}
-              attachment={{
-                url: '',
-                name: filename,
-                contentType: '',
-              }}
+              attachment={{ url: '', name: filename, contentType: '' }}
               isUploading={true}
             />
           ))}
@@ -225,10 +214,7 @@ function PureMultimodalInput({
         placeholder="Type your content here..."
         value={input}
         onChange={handleInput}
-        className={cx(
-          'min-h-[48px] max-h-[calc(75dvh)] overflow-hidden resize-none rounded-2xl !text-base bg-muted pb-10 dark:border-zinc-700',
-          className,
-        )}
+        className="hidden"
         rows={5}
         autoFocus
         onKeyDown={(event) => {
@@ -238,7 +224,6 @@ function PureMultimodalInput({
             !event.nativeEvent.isComposing
           ) {
             event.preventDefault();
-
             if (status !== 'ready') {
               toast.error('Please wait for the model to finish its response!');
             } else {
@@ -273,7 +258,6 @@ export const MultimodalInput = memo(
     if (prevProps.input !== nextProps.input) return false;
     if (prevProps.status !== nextProps.status) return false;
     if (!equal(prevProps.attachments, nextProps.attachments)) return false;
-
     return true;
   },
 );
