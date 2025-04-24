@@ -32,8 +32,13 @@ export function AppSidebar({ user }: { user: User | undefined }) {
               onClick={() => {
                 setOpenMobile(false);
               }}
-              className="flex flex-row gap-3 items-center"
+              className="flex flex-row gap-2 items-center"
             >
+              <img
+                src="/images/M.I.R.R.O.R-2.svg"
+                alt="Mirror Logo"
+                className="w-10 h-10"
+              />
               <span className="text-lg font-semibold px-2 hover:bg-muted rounded-md cursor-pointer">
                 MIRROR
               </span>

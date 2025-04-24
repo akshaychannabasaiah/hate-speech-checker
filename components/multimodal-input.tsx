@@ -169,16 +169,16 @@ function PureMultimodalInput({
   return (
     <div className="relative w-full flex flex-col gap-4">
       <div
-        className="relative w-full rounded-xl border border-dashed p-4 transition-colors cursor-pointer hover:bg-muted/50"
+        className="relative w-full min-h-[200px] rounded-xl border-2 border-dashed border-gray-400 p-6 transition-colors cursor-pointer bg-muted/30 hover:bg-muted/50 hover:shadow-lg"
         onClick={() => fileInputRef.current?.click()}
       >
-        <div className="flex flex-col items-center justify-center text-center">
-          <PaperclipIcon size={28} className="text-gray-400 mb-2" />
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Drag and drop files here or click to upload
+        <div className="flex flex-col items-center justify-center text-center h-full gap-4">
+          <PaperclipIcon size={40} className="text-gray-400" />
+          <p className="text-xl font-medium text-gray-600 dark:text-gray-300">
+            Drag and drop files here
           </p>
-          <p className="text-xs text-gray-400 mt-1">
-            (Supports multiple files)
+          <p className="text-md text-gray-500 dark:text-gray-400">
+            or click to upload from your device
           </p>
         </div>
         <input
