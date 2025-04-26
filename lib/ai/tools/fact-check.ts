@@ -10,7 +10,7 @@ export interface ClaimBusterSentence {
 
 export const checkClaimsFromSentences = tool({
   description:
-    'Analyze text to fact check the claims in the text, takes string text as argument and returns a score of how likely the claim has to be verified externally(Is it Check worthy or not).',
+    'Analyze text to fact check the claims in the text, takes string text as argument and for each sentence in the input text, returns a score of how likely the claim has to be verified externally(Is it Check worthy or not). Provide the tool strictly only English text. You must translate text in other language to English before calling the tool.',
   parameters: z.object({
     text: z.string(),
   }),
@@ -21,7 +21,7 @@ export const checkClaimsFromSentences = tool({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.CLAIMBUSTER_API_KEY || '',
+          'x-api-key': process.env.CLAIM_BUSTER_API_KEY || '',
         },
         body: JSON.stringify({ input_text: text }),
       },
