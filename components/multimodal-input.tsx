@@ -171,6 +171,34 @@ function PureMultimodalInput({
       <div
         className="relative w-full min-h-[200px] rounded-xl border-2 border-dashed border-gray-400 p-6 transition-colors cursor-pointer bg-muted/30 hover:bg-muted/50 hover:shadow-lg"
         onClick={() => fileInputRef.current?.click()}
+        onDragOver={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+        onDrop={async (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const files = Array.from(e.dataTransfer.files);
+          if (files.length > 0) {
+            setUploadQueue(files.map((file) => file.name));
+            try {
+              const uploadPromises = files.map((file) => uploadFile(file));
+              const uploadedAttachments = await Promise.all(uploadPromises);
+              const successfullyUploaded = uploadedAttachments.filter(Boolean);
+              setAttachments((prev) => [...prev, ...successfullyUploaded]);
+              if (!input && successfullyUploaded.length > 0) {
+                setInput('MIRROR ANALYSIS REPORT');
+                setAutoSubmitPending(true);
+              } else {
+                submitForm();
+              }
+            } catch (error) {
+              console.error('Error uploading files!', error);
+            } finally {
+              setUploadQueue([]);
+            }
+          }
+        }}
       >
         <div className="flex flex-col items-center justify-center text-center h-full gap-4">
           <PaperclipIcon size={40} className="text-gray-400" />

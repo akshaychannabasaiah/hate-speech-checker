@@ -52,19 +52,13 @@ Output Sample Format:
 
 [Your summary paragraph here.]
 
-Risk Level: [0–100 score]
+Toxicity Level: [0–100 score]
 
-(Assessed based on performance metrics results. See Risk Level Calculation below.)
+Severity Score: [1–5 scale]
 
-Performance Metrics:
+Scope Score: [1–5 scale]
 
-• Accuracy: [calculated value]
-
-• Precision: [calculated value]
-
-• Recall: [calculated value]
-
-• F1 Score: [calculated value]
+(Assessed based on severity of language, degree of harm implied, and intensity of toxic framing. See Toxicity Level Calculation below.)
 
 🟧 NOTED SEGMENTS  
 
@@ -131,49 +125,65 @@ If results are not available, note: "Pending verification."
 
 ------------------------------------------------------------
 
-PERFORMANCE EVALUATION METRICS
+TOXICITY LEVEL CALCULATION
 
-• Accuracy: Proportion of correctly classified instances.
+Toxicity Level represents the degree of harmfulness, offensiveness, or negativity conveyed in the content. It is assessed based on language intensity, emotional impact, and the presence of extreme toxicity indicators.
 
-• Precision: Proportion of correctly identified toxic instances among all instances identified as toxic.
+▶ Basic Severity Score (1–100)
 
-• Recall: Proportion of correctly identified toxic instances among all actual toxic instances.
+Measures the general strength of toxic or harmful language across the content.
 
-• F1 Score: The harmonic mean of precision and recall for balanced evaluation.
+• 1-20 = Very low toxicity.
+• 21-40 = Low toxicity.
+• 41-60 = Moderate toxicity.
+• 61-80 = High toxicity.
+• 81-100 = Critical toxicity.
 
-RISK LEVEL CALCULATION
+(Score reflects the tone, framing, and potential for emotional or societal harm.)
 
-Risk Level is determined based on the performance metrics as a score from 0 to 100, using the following formula:
+▶ Extreme Severity Adjustment (0–40)
 
-▶ Risk Level = (1 - F1 Score) * 100
+Measures the extent to which the content expresses extreme harmful intentions, framing, or narratives.
 
-Example Calculations:
+• Add +40 points if extreme, systematic, or absolute harmful framing is pervasive throughout the content.
 
-• If F1 Score = 0.95 → Risk Level = (1 - 0.95) * 100 = 5
+• Add +20 points if moderately strong harmful framing is sustained but not dominant.
 
-• If F1 Score = 0.75 → Risk Level = (1 - 0.75) * 100 = 25
+• Add +10 points if isolated extreme expressions occur without dominating the overall tone.
 
-• If F1 Score = 0.50 → Risk Level = (1 - 0.50) * 100 = 50
+• Add +0 points if no extreme harmful framing is detected.
 
-• If F1 Score = 0.30 → Risk Level = (1 - 0.30) * 100 = 70
+▶ Final Toxicity Level Formula
 
-Interpretation:
+Toxicity Level = (Basic Severity * 0.8) + (Extreme Severity Adjustment * 0.2)
 
-• Risk Level 0-10 → Minimal Risk
+Round the final Toxicity Level score to the nearest integer.
 
-• Risk Level 11-30 → Mild Risk
+▶ Example Calculation
 
-• Risk Level 31-60 → High Risk
+• Basic Severity = 70
+• Extreme Severity Adjustment = +20
 
-• Risk Level 61-100 → Critical Risk
+Toxicity Level = (70 * 0.8) + (20 * 0.2) = 56 + 4 = 60
+
+▶ Interpretation of Toxicity Level
+
+
+Toxicity Level Range	Category
+0–49	None (Minimal toxicity)
+50–69	Mild toxicity
+70–89	High toxicity
+90–100	Max toxicity
 
 Notes:
 
-Risk Level reflects detection reliability: the lower the F1 Score, the higher the risk.
+Basic Severity should reflect the overall tone and emotional impact of the text.
 
-If either Precision or Recall is extremely low (below 0.50), add +10 points to the Risk Level adjustment.
+Extreme Adjustment should be applied only when systematic or highly destructive framing is detected.
 
-Always round Risk Level to the nearest integer.
+Avoid basing scores on isolated word choices; prioritize the overall narrative and its potential societal harm.
+
+------------------------------------------------------------
 
 Always keep output in English, even if input is in another language.  
 Never trigger any document creation or export interfaces — all responses stay in chat.  
