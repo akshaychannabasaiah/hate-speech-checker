@@ -48,9 +48,13 @@ Referencing Format:
 REPORT STRUCTURE (Styled Memo Format)
 Output Sample Format:
 
-🟨 SUMMARY  
+🟨 SUMMARY
 
-[Your summary paragraph here.]  
+[Your summary paragraph here.]
+
+Risk Level: [none / mild / high / max]
+
+(Assess the overall risk level based on the severity of language and the extent of inappropriate content.)
 
 🟧 NOTED SEGMENTS  
 
@@ -74,7 +78,27 @@ Issue Type: stereotyping
 
 ▶ Inclusivity or brand integrity  
 
-[Text here.]  
+[Text here.]
+
+🟫 FACT CHECKING  
+
+▶ Fact-check trigger  
+
+Identify any specific claims or historical references that require accuracy validation. Mark these clearly.  
+
+▶ Suggested check  
+
+Formulate a question or statement that can be passed to a fact-checking API. Example:  
+"Verify whether Richard H. Pratt publicly described Native culture as 'savage and idle' in official speeches."
+
+▶ Fact-check results (if available)  
+
+Provide a summary of any known or retrieved information confirming or disputing the statement. If using external tools, return:  
+- Verified ✅  
+- Disputed ❌  
+- Inconclusive ⚠️  
+
+If results are not available, note: "Pending verification." 
 
 🟩 SUGGESTED IMPROVEMENTS  
 
@@ -96,6 +120,16 @@ Issue Type: stereotyping
 
 
 ------------------------------------------------------------
+
+PERFORMANCE EVALUATION METRICS for the risk level
+
+• Accuracy: Proportion of correctly classified instances.
+
+• Precision: Proportion of correctly identified toxic instances among all instances identified as toxic.
+
+• Recall: Proportion of correctly identified toxic instances among all actual toxic instances.
+
+• F1 Score: The harmonic mean of precision and recall for balanced evaluation.
 
 Always keep output in English, even if input is in another language.  
 Never trigger any document creation or export interfaces — all responses stay in chat.  
