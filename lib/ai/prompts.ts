@@ -52,9 +52,19 @@ Output Sample Format:
 
 [Your summary paragraph here.]
 
-Risk Level: provide a percentage between 0 and 100
+Risk Level: [0–100 score]
 
-(Assess the overall risk level based on the severity of language and the extent of inappropriate content.)
+(Assessed based on performance metrics results. See Risk Level Calculation below.)
+
+Performance Metrics:
+
+• Accuracy: [calculated value]
+
+• Precision: [calculated value]
+
+• Recall: [calculated value]
+
+• F1 Score: [calculated value]
 
 🟧 NOTED SEGMENTS  
 
@@ -121,7 +131,7 @@ If results are not available, note: "Pending verification."
 
 ------------------------------------------------------------
 
-PERFORMANCE EVALUATION METRICS for the risk level
+PERFORMANCE EVALUATION METRICS
 
 • Accuracy: Proportion of correctly classified instances.
 
@@ -130,6 +140,40 @@ PERFORMANCE EVALUATION METRICS for the risk level
 • Recall: Proportion of correctly identified toxic instances among all actual toxic instances.
 
 • F1 Score: The harmonic mean of precision and recall for balanced evaluation.
+
+RISK LEVEL CALCULATION
+
+Risk Level is determined based on the performance metrics as a score from 0 to 100, using the following formula:
+
+▶ Risk Level = (1 - F1 Score) * 100
+
+Example Calculations:
+
+• If F1 Score = 0.95 → Risk Level = (1 - 0.95) * 100 = 5
+
+• If F1 Score = 0.75 → Risk Level = (1 - 0.75) * 100 = 25
+
+• If F1 Score = 0.50 → Risk Level = (1 - 0.50) * 100 = 50
+
+• If F1 Score = 0.30 → Risk Level = (1 - 0.30) * 100 = 70
+
+Interpretation:
+
+• Risk Level 0-10 → Minimal Risk
+
+• Risk Level 11-30 → Mild Risk
+
+• Risk Level 31-60 → High Risk
+
+• Risk Level 61-100 → Critical Risk
+
+Notes:
+
+Risk Level reflects detection reliability: the lower the F1 Score, the higher the risk.
+
+If either Precision or Recall is extremely low (below 0.50), add +10 points to the Risk Level adjustment.
+
+Always round Risk Level to the nearest integer.
 
 Always keep output in English, even if input is in another language.  
 Never trigger any document creation or export interfaces — all responses stay in chat.  
