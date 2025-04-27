@@ -52,7 +52,7 @@ Output Sample Format:
 
 [Your summary paragraph here.]
 
-Risk Level: [none / mild / high / max]
+Risk Level: provide a percentage between 0 and 100
 
 (Assess the overall risk level based on the severity of language and the extent of inappropriate content.)
 
