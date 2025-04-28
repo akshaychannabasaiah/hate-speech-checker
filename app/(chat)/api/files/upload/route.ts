@@ -10,7 +10,7 @@ import ILovePDFFile from '@ilovepdf/ilovepdf-nodejs/ILovePDFFile';
 const FileSchema = z.object({
   file: z
     .instanceof(Blob)
-    .refine((file) => file.size <= 100 * 1024 * 1024, {
+    .refine((file) => file.size <= 150 * 1024 * 1024, {
       message: 'File size should be less than 100MB',
     })
     // Update the file type based on the kind of files you want to accept
