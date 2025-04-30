@@ -1,74 +1,110 @@
 'use client';
 
+import cx from 'classnames';
 import { useEffect, useState } from 'react';
-import {
-  checkClaimsFromSentences,
-  ClaimBusterSentence,
-} from '@/lib/ai/tools/fact-check';
 
-export function Fact({ text }: { text: string }) {
-  const [claims, setClaims] = useState<ClaimBusterSentence[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+interface FactItem {
+  index: number;
+  sentence: string;
+  claim_score: number;
+  label: string;
+}
+
+const SAMPLE_FACTS: FactItem[] = [
+  {
+    index: 1,
+    sentence: 'The Earth revolves around the Sun.',
+    claim_score: 0.95,
+    label: 'true',
+  },
+  {
+    index: 2,
+    sentence: 'The Moon is made of cheese.',
+    claim_score: 0.1,
+    label: 'false',
+  },
+  {
+    index: 3,
+    sentence: 'There might be life on Mars.',
+    claim_score: 0.5,
+    label: 'uncertain',
+  },
+  {
+    index: 4,
+    sentence: 'Water boils at 100°C at sea level.',
+    claim_score: 0.99,
+    label: 'true',
+  },
+  {
+    index: 5,
+    sentence: 'Humans can breathe underwater unaided.',
+    claim_score: 0.05,
+    label: 'false',
+  },
+];
+
+export function Fact({ facts = SAMPLE_FACTS }: { facts?: FactItem[] }) {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    if (!text) return;
-
-    const fetchClaims = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const results = await checkClaimsFromSentences(text);
-        setClaims(results);
-      } catch (err) {
-        setError('Failed to fetch claim scores.');
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
     };
 
-    fetchClaims();
-  }, [text]);
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
-  if (loading) {
-    return <div className="text-gray-500">Analyzing claims...</div>;
-  }
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
-
-  if (!claims.length) {
-    return <div className="text-gray-500">No claims detected.</div>;
-  }
+  const factsToShow = isMobile ? 3 : 5; // Show fewer facts on mobile
+  const displayedFacts = facts.slice(0, factsToShow);
 
   return (
-    <div className="flex flex-col gap-4 p-4 bg-white rounded-2xl shadow-md max-w-3xl">
-      <h2 className="text-xl font-semibold">Claim Analysis</h2>
-      {claims.map((claim) => (
-        <div
-          key={claim.index}
-          className="p-4 rounded-xl border border-gray-200 bg-gray-50"
-        >
-          <p className="text-gray-800">{claim.sentence}</p>
-          <div className="flex justify-between items-center mt-2">
-            <span
-              className={`text-sm font-medium px-2 py-1 rounded-full ${
-                claim.label === 'CHECKWORTHY'
-                  ? 'bg-yellow-100 text-yellow-800'
-                  : 'bg-gray-200 text-gray-600'
-              }`}
-            >
-              {claim.label}
-            </span>
-            <span className="text-sm text-gray-500">
-              Score: {claim.claim_score.toFixed(2)}
-            </span>
+    <div className="flex flex-col gap-4 rounded-2xl p-4 skeleton-bg max-w-[500px] bg-gray-100">
+      <h2 className="text-xl font-bold text-gray-800">Facts</h2>
+      <div className="flex flex-col gap-2">
+        {displayedFacts.map((fact) => (
+          <div
+            key={fact.index}
+            className={cx(
+              'p-3 rounded-lg shadow-md',
+              {
+                'bg-green-100': fact.label === 'true',
+              },
+              {
+                'bg-red-100': fact.label === 'false',
+              },
+              {
+                'bg-yellow-100': fact.label === 'uncertain',
+              },
+            )}
+          >
+            <p className="text-gray-800 text-sm">{fact.sentence}</p>
+            <div className="flex justify-between items-center mt-2">
+              <span className="text-xs text-gray-600">
+                Claim Score: {fact.claim_score.toFixed(2)}
+              </span>
+              <span
+                className={cx(
+                  'text-xs font-semibold px-2 py-1 rounded',
+                  {
+                    'bg-green-200 text-green-800': fact.label === 'true',
+                  },
+                  {
+                    'bg-red-200 text-red-800': fact.label === 'false',
+                  },
+                  {
+                    'bg-yellow-200 text-yellow-800': fact.label === 'uncertain',
+                  },
+                )}
+              >
+                {fact.label.toUpperCase()}
+              </span>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

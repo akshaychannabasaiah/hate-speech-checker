@@ -10,7 +10,7 @@ export interface ClaimBusterSentence {
 
 export const checkClaimsFromSentences = tool({
   description:
-    'Analyze text to fact check the claims in the text, takes string text as argument and for each sentence in the input text, returns a score of how likely the claim has to be verified externally(Is it Check worthy or not). Provide the tool strictly only English text. You must translate text in other language to English before calling the tool.',
+    'This tool analyzes a given English text and evaluates each sentence for its "checkworthiness." It is designed to assist with fact-checking by determining how likely each sentence is to require external verification. The tool takes a single string of text in English as input. If the input text is in another language, you must translate it into English before using this tool. The tool returns a formatted string with details about each sentence, including its numerical score. The higher the score, the more likely the sentence needs external fact-checking.',
   parameters: z.object({
     text: z.string(),
   }),
@@ -33,14 +33,15 @@ export const checkClaimsFromSentences = tool({
     }
 
     const data = await response.json();
+    console.log(data);
 
-    return data.results.map(
-      (item: any, index: number): ClaimBusterSentence => ({
-        index,
-        sentence: item.sentence,
-        claim_score: item.claim_score,
-        label: item.label,
-      }),
-    );
+    // Format the results into a string
+    const formattedResults = data.results
+      .map((item: any) => {
+        return `The claim "${item.text}" has a claim score of ${(1 - item.score).toFixed(2)}`;
+      })
+      .join(' '); // Separate each sentence block with a blank line
+
+    return formattedResults;
   },
 });

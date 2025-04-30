@@ -42,7 +42,7 @@ const ILovePdfInstance = new ILovePDFApi(
   process.env.ILOVEPDF_SECRET_KEY as string,
 );
 
-export async function ConverttoPDF(fileUrl: string) {
+async function ConverttoPDF(fileUrl: string) {
   const task = ILovePdfInstance.newTask('officepdf');
   await task.start();
   await task.addFile(fileUrl);
