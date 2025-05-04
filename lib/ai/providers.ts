@@ -35,8 +35,8 @@ export const myProvider = isTestEnvironment
           model: google('gemini-2.0-flash'),
           middleware: extractReasoningMiddleware({ tagName: 'think' }),
         }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
+        'title-model': groq('llama-3.1-8b-instant'),
+        'artifact-model': groq('llama-3.1-8b-instant'),
       },
       imageModels: {
         'small-model': xai.image('grok-2-image'),
