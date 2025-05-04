@@ -158,7 +158,7 @@ function PureMultimodalInput({
           ...successfullyUploadedAttachments,
         ]);
         if (!input && successfullyUploadedAttachments.length > 0) {
-          setInput('MIRROR ANALYSIS REPORT');
+          setInput(`MIRROR ANALYSIS REPORT - ${files[0].name}`);
           setAutoSubmitPending(true);
         } else {
           submitForm();
@@ -200,7 +200,7 @@ function PureMultimodalInput({
                 ...successfullyUploadedAttachments,
               ]);
               if (!input && successfullyUploadedAttachments.length > 0) {
-                setInput('MIRROR ANALYSIS REPORT');
+                setInput(`MIRROR ANALYSIS REPORT - ${files[0].name}`);
                 setAutoSubmitPending(true);
               } else {
                 submitForm();
