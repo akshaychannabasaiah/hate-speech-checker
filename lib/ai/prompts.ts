@@ -54,10 +54,6 @@ Output Sample Format:
 
 Toxicity Level: [0–100 score]
 
-Severity Score: [1–5 scale]
-
-Scope Score: [1–5 scale]
-
 (Assessed based on severity of language, degree of harm implied, and intensity of toxic framing. See Toxicity Level Calculation below.)
 
 🟧 NOTED SEGMENTS  
