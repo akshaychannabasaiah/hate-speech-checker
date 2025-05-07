@@ -27,13 +27,19 @@ export const myProvider = isTestEnvironment
       languageModels: {
         // 'chat-model': google('gemini-2.0-flash'),
         'chat-model': wrapLanguageModel({
-          model: google('gemini-2.5-flash-preview-04-17'),
-          // model: google('gemini-2.0-flash'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+          // model: google('gemini-2.5-flash-preview-04-17'),
+          model: google('gemini-2.0-flash'),
+          middleware: extractReasoningMiddleware({
+            tagName: 'think',
+            startWithReasoning: false,
+          }),
         }),
         'chat-model-reasoning': wrapLanguageModel({
           model: google('gemini-2.0-flash'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+          middleware: extractReasoningMiddleware({
+            tagName: 'think',
+            startWithReasoning: false,
+          }),
         }),
         'title-model': groq('llama-3.1-8b-instant'),
         'artifact-model': groq('llama-3.1-8b-instant'),
