@@ -4,14 +4,13 @@ import { z } from 'zod';
 
 import { auth } from '@/app/(auth)/auth';
 import ILovePDFApi from '@ilovepdf/ilovepdf-nodejs';
-import ILovePDFFile from '@ilovepdf/ilovepdf-nodejs/ILovePDFFile';
 
 // Use Blob instead of File since File is not available in Node.js environment
 const FileSchema = z.object({
   file: z
     .instanceof(Blob)
     .refine((file) => file.size <= 150 * 1024 * 1024, {
-      message: 'File size should be less than 100MB',
+      message: 'File size should be less than 150MB',
     })
     // Update the file type based on the kind of files you want to accept
     .refine(

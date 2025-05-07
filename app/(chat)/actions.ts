@@ -25,6 +25,7 @@ export async function generateTitleFromUserMessage({
     model: myProvider.languageModel('title-model'),
     system: `\n
     - you will generate a short title based on the first message a user begins a conversation with
+    - use the title of the uploaded document if it is available
     - ensure it is not more than 80 characters long
     - the title should be a summary of the user's message
     - do not use quotes or colons`,

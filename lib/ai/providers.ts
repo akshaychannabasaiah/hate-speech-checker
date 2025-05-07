@@ -29,14 +29,20 @@ export const myProvider = isTestEnvironment
         'chat-model': wrapLanguageModel({
           // model: google('gemini-2.5-flash-preview-04-17'),
           model: google('gemini-2.0-flash'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+          middleware: extractReasoningMiddleware({
+            tagName: 'think',
+            startWithReasoning: false,
+          }),
         }),
         'chat-model-reasoning': wrapLanguageModel({
           model: google('gemini-2.0-flash'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+          middleware: extractReasoningMiddleware({
+            tagName: 'think',
+            startWithReasoning: false,
+          }),
         }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
+        'title-model': groq('llama-3.1-8b-instant'),
+        'artifact-model': groq('llama-3.1-8b-instant'),
       },
       imageModels: {
         'small-model': xai.image('grok-2-image'),

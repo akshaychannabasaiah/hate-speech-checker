@@ -149,10 +149,16 @@ function PureMultimodalInput({
       try {
         const uploadPromises = files.map((file) => uploadFile(file));
         const uploadedAttachments = await Promise.all(uploadPromises);
-        const successfullyUploaded = uploadedAttachments.filter(Boolean);
-        setAttachments((prev) => [...prev, ...successfullyUploaded]);
-        if (!input && successfullyUploaded.length > 0) {
-          setInput('MIRROR ANALYSIS REPORT');
+        const successfullyUploadedAttachments = uploadedAttachments.filter(
+          (attachment) => attachment !== undefined,
+        );
+
+        setAttachments((currentAttachments) => [
+          ...currentAttachments,
+          ...successfullyUploadedAttachments,
+        ]);
+        if (!input && successfullyUploadedAttachments.length > 0) {
+          setInput(`MIRROR ANALYSIS REPORT - ${files[0].name}`);
           setAutoSubmitPending(true);
         } else {
           submitForm();
@@ -184,10 +190,17 @@ function PureMultimodalInput({
             try {
               const uploadPromises = files.map((file) => uploadFile(file));
               const uploadedAttachments = await Promise.all(uploadPromises);
-              const successfullyUploaded = uploadedAttachments.filter(Boolean);
-              setAttachments((prev) => [...prev, ...successfullyUploaded]);
-              if (!input && successfullyUploaded.length > 0) {
-                setInput('MIRROR ANALYSIS REPORT');
+              const successfullyUploadedAttachments =
+                uploadedAttachments.filter(
+                  (attachment) => attachment !== undefined,
+                );
+
+              setAttachments((currentAttachments) => [
+                ...currentAttachments,
+                ...successfullyUploadedAttachments,
+              ]);
+              if (!input && successfullyUploadedAttachments.length > 0) {
+                setInput(`MIRROR ANALYSIS REPORT - ${files[0].name}`);
                 setAutoSubmitPending(true);
               } else {
                 submitForm();
@@ -201,7 +214,7 @@ function PureMultimodalInput({
         }}
       >
         <div className="flex flex-col items-center justify-center text-center h-full gap-4">
-          <PaperclipIcon size={40} className="text-gray-400" />
+          <PaperclipIcon size={40} />
           <p className="text-xl font-medium text-gray-600 dark:text-gray-300">
             Drag and drop files here
           </p>
