@@ -62,8 +62,6 @@ Toxicity Level: [0–100 score]
 
 Content Excerpt: "..."
 
-Issue Type: stereotyping
-
 🟥 EXPLANATION  
 
 ▶ What's the concern?  
