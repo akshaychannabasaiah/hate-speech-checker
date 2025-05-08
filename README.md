@@ -1,4 +1,13 @@
+<a href="https://chat.vercel.ai/">
 
+
+  <img alt="MIRROR" src="public/images/M.I.R.R.O.R-2.svg">
+
+
+  <h1 align="center">Next.js AI Chatbot</h1>
+
+
+</a>
 <p align="center">
   Hate speech and xenophobia checker Built With Next.js and the AI SDK by Vercel.
 </p>
